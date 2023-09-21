@@ -1,0 +1,52 @@
+{
+  "type": "think-admin-plugin",
+  "name": "zoujingli/think-plugs-center-simple",
+  "license": "Apache-2.0",
+  "homepage": "https://thinkadmin.top",
+  "description": "Plugin Center for ThinkAdmin",
+  "authors": [
+    {
+      "name": "Anyon",
+      "email": "zoujingli@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "ext-json": "*",
+    "zoujingli/think-install": "^1.0|*",
+    "zoujingli/think-library": "^6.1|*"
+  },
+  "autoload": {
+    "files": [
+      "src/helper.php"
+    ],
+    "psr-4": {
+      "plugin\\center\\simple\\": "src"
+    }
+  },
+  "extra": {
+    "think": {
+      "services": [
+        "plugin\\center\\simple\\Service"
+      ]
+    },
+    "plugin": {
+      "copy": {
+        "stc/database": "database/migrations"
+      }
+    },
+    "config": {
+      "type": "service",
+      "name": "插件管理入库",
+      "homepage": "https://thinkadmin.top",
+      "document": "https://thinkadmin.top/plugin/think-plugs-center-simple.html"
+    }
+  },
+  "minimum-stability": "dev",
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "zoujingli/think-install": true
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{extend name='main'}
+
+{block name='content'}
+<style>
+    .plugin-item:hover .uploadimage {
+        background-position: 0 0 !important;
+    }
+
+    .plugin-item-icon {
+        width: 100%;
+        padding-top: 30%;
+        margin-bottom: 0;
+    }
+
+    .plugin-item-name {
+        left: 0;
+        right: 0;
+        color: #fff;
+        bottom: 0;
+        padding: 0.8em 0;
+        position: absolute;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .plugin-item-tags {
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 3px 5px;
+        position: absolute;
+    }
+
+    .plugin-item-tags .layui-badge {
+        box-shadow: 1px 1px 2px 0 rgba(50, 50, 54, 0.5);
+    }
+</style>
+
+<script>
+    $(function () {
+        $('body').off('click', '[data-plugs-click]').on('click', '[data-plugs-click]', function () {
+            $('#p' + (this.dataset.plugsClick || 'plugin-encode')).trigger('click');
+        })
+    })
+</script>
+
+<div class="padding-15">
+    <div class="layui-row layui-col-space30">
+        {foreach $items as $item}
+        <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+            <div class="plugin-item">
+                <div class="plugin-item-icon uploadimage" data-lazy-src="{$item.cover|default=''}" data-plugs-click="{$item.encode}">
+                    <div class="plugin-item-tags flex flex-between">
+                        <div class="layui-badge layui-bg-cyan">{$item.code|default=''}</div>
+                        {notempty name='item.version'}
+                        <div class="layui-badge think-bg-violet">{$item.version|default=''}</div>
+                        {/notempty}
+                    </div>
+                    <div class="plugin-item-name">
+                        <div class="layui-elip">{$item.name}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="margin-top-10">
+                {notempty name='item.plugmenus'}
+                <a class="layui-btn layui-btn-sm" id="p{$item.encode}" data-href="{$item.center}">管理插件</a>
+                {if auth('setdefault') and isset($default) and $default eq $item.code}
+                <a class="layui-btn layui-btn-sm layui-btn-normal pull-right" data-action="{:url('setdefault')}" data-value="default#0">取消默认</a>
+                {elseif auth('setdefault')}
+                <a class="layui-btn layui-btn-sm layui-btn-primary pull-right" data-action="{:url('setdefault')}" data-value="default#{$item.code}">设为默认</a>
+                {/if}
+                {else}
+                <a class="layui-btn layui-btn-sm layui-btn-disabled">未配置菜单</a>
+                {/notempty}
+            </div>
+        </div>
+        {/foreach}
+        {empty name='items'}
+        <div>
+            <div class="notdata">无记录</div>
+        </div>
+        {/empty}
+    </div>
+</div>
+{/block}
