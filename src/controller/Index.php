@@ -110,7 +110,7 @@ class Index extends Controller
         /*! 读取当前用户权限菜单树 */
         $this->menus = MenuService::getTree();
         foreach ($this->menus as &$menu) {
-            if ($menu['node'] === 'plugin-center/index/index') {
+            if ($menu['node'] === 'plugin-center-simple/index/index') {
                 $menu['url'] = '#';
                 $menu['sub'] = $menus;
             }
