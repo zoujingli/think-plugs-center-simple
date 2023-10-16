@@ -18,11 +18,9 @@ declare (strict_types=1);
 
 namespace plugin\center\simple\controller;
 
-use plugin\center\simple\service\Login;
 use plugin\center\simple\service\Plugin;
 use think\admin\Controller;
 use think\admin\service\AdminService;
-use think\admin\service\MenuService;
 use think\exception\HttpResponseException;
 
 /**
@@ -103,18 +101,22 @@ class Index extends Controller
             }
         }
 
-        array_unshift($menus, [
-            'id' => 0, 'url' => admuri('index/index') . '?from=force', 'icon' => 'layui-icon layui-icon-prev', 'title' => lang('返回插件中心'),
-        ]);
-
         /*! 读取当前用户权限菜单树 */
-        $this->menus = MenuService::getTree();
-        foreach ($this->menus as &$menu) {
-            if ($menu['node'] === 'plugin-center-simple/index/index') {
-                $menu['url'] = '#';
-                $menu['sub'] = $menus;
-            }
-        }
+        $this->menus = [
+            [
+                'id'    => 9999998,
+                'url'   => '#',
+                'sub'   => $menus,
+                'node'  => 'plugin-center-simple/index/index',
+                'title' => $this->plugin['name']
+            ],
+            [
+                'id'    => 9999999,
+                'url'   => admuri('index/index') . '?from=force',
+                'title' => '返回首页'
+            ]
+        ];
+
         $this->super = AdminService::isSuper();
         $this->theme = AdminService::getUserTheme();
         $this->title = $this->plugin['name'] ?? '';
