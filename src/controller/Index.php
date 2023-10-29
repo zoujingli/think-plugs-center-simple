@@ -45,7 +45,6 @@ class Index extends Controller
                 json(['code' => 1, 'info' => '已设置默认插件', 'data' => strstr(liteuri(), '#', true), 'wait' => 'false'])
             );
         } else {
-            // $this->title = '插件管理';
             $this->items = Plugin::getLocalPlugs('module');
             foreach ($this->items as &$vo) {
                 $vo['encode'] = encode($vo['code']);
