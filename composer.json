@@ -11,10 +11,10 @@
     }
   ],
   "require": {
-    "php": ">=7.1",
+    "php": ">7.1",
     "ext-json": "*",
-    "zoujingli/think-install": "^1.0|*",
-    "zoujingli/think-library": "^6.1|*"
+    "zoujingli/think-install": "^1.0|@dev",
+    "zoujingli/think-library": "^6.1|@dev"
   },
   "autoload": {
     "files": [
@@ -38,7 +38,6 @@
     "config": {
       "type": "service",
       "name": "插件管理入库",
-      "homepage": "https://thinkadmin.top",
       "document": "https://thinkadmin.top/plugin/think-plugs-center-simple.html"
     }
   },
