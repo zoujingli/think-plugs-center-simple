@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------
 // | Center Plugin for ThinkAdmin
 // +----------------------------------------------------------------------
-// | 版权所有 2014~2023 ThinkAdmin [ thinkadmin.top ]
+// | 版权所有 2014~2024 ThinkAdmin [ thinkadmin.top ]
 // +----------------------------------------------------------------------
 // | 官方网站: https://thinkadmin.top
 // +----------------------------------------------------------------------
@@ -26,6 +26,6 @@ if (!function_exists('liteuri')) {
     function liteuri(string $url = '', array $vars = [], $suffix = true, $domain = false): string
     {
         $code = encode(sysvar('CurrentPluginCode'));
-        return sysuri("layout-simple/{$code}", [], false) . '#' . url($url, $vars, $suffix, $domain)->build();
+        return sysuri("layout/{$code}", [], false) . '#' . url($url, $vars, $suffix, $domain)->build();
     }
 }

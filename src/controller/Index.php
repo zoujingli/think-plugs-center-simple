@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------
 // | Center Plugin for ThinkAdmin
 // +----------------------------------------------------------------------
-// | 版权所有 2014~2023 ThinkAdmin [ thinkadmin.top ]
+// | 版权所有 2014~2024 ThinkAdmin [ thinkadmin.top ]
 // +----------------------------------------------------------------------
 // | 官方网站: https://thinkadmin.top
 // +----------------------------------------------------------------------
@@ -18,22 +18,24 @@ declare (strict_types=1);
 
 namespace plugin\center\simple\controller;
 
+use plugin\center\simple\Service;
 use plugin\center\simple\service\Plugin;
 use think\admin\Controller;
 use think\admin\service\AdminService;
-use think\exception\HttpResponseException;
 
 /**
- * 插件应用管理
+ * 应用插件管理
  * Class Index
  * @package plugin\center\simple\controller
  */
 class Index extends Controller
 {
     /**
-     * 管理已安装插件
+     * 应用插件入口
      * @auth true
      * @menu true
+     * @return void|\think\Response
+     * @throws \ReflectionException
      * @throws \think\admin\Exception
      */
     public function index()
@@ -41,14 +43,14 @@ class Index extends Controller
         $this->default = sysdata('plugin.center.config')['default'] ?? '';
         $default = $this->request->get('from') === 'force' ? '' : $this->default;
         if (!empty($default) && Plugin::isInstall($default)) {
-            if (sysvar('CurrentPluginCode', $default)) throw new HttpResponseException(
-                json(['code' => 1, 'info' => '已设置默认插件', 'data' => strstr(liteuri(), '#', true), 'wait' => 'false'])
-            );
+            if (sysvar('CurrentPluginCode', $default)) {
+                return json(['code' => 1, 'info' => '已设置默认插件', 'data' => strstr(liteuri(), '#', true), 'wait' => 'false']);
+            }
         } else {
-            $this->items = Plugin::getLocalPlugs('module');
+            $this->items = Plugin::getLocalPlugs('module', $total, true);
             foreach ($this->items as &$vo) {
                 $vo['encode'] = encode($vo['code']);
-                $vo['center'] = sysuri("layout-simple/{$vo['encode']}", [], false);
+                $vo['center'] = sysuri("layout/{$vo['encode']}", [], false);
             }
             $this->fetch();
         }
@@ -106,7 +108,7 @@ class Index extends Controller
                 'id'    => 9999998,
                 'url'   => '#',
                 'sub'   => $menus,
-                'node'  => 'plugin-center-simple/index/index',
+                'node'  => Service::getAppName(),
                 'title' => $this->plugin['name']
             ],
             [
