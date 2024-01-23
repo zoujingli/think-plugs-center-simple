@@ -40,20 +40,24 @@ class Index extends Controller
      */
     public function index()
     {
+        // 检查默认插件并自动跳转
         $this->default = sysdata('plugin.center.config')['default'] ?? '';
         $default = $this->request->get('from') === 'force' ? '' : $this->default;
-        if (!empty($default) && Plugin::isInstall($default)) {
-            if (sysvar('CurrentPluginCode', $default)) {
-                return json(['code' => 1, 'info' => '已设置默认插件', 'data' => strstr(liteuri(), '#', true), 'wait' => 'false']);
-            }
-        } else {
-            $this->items = Plugin::getLocalPlugs('module', $total, true);
-            foreach ($this->items as &$vo) {
-                $vo['encode'] = encode($vo['code']);
-                $vo['center'] = sysuri("layout/{$vo['encode']}", [], false);
-            }
-            $this->fetch();
+        if (!empty($default) && Plugin::isInstall($default) && sysvar('CurrentPluginCode', $default)) {
+            return json(['code' => 1, 'info' => '已设置默认插件', 'data' => strstr(liteuri(), '#', true), 'wait' => 'false']);
         }
+        $this->items = Plugin::getLocalPlugs('module', $total, true);
+        // 如果只有一个插件，自动进入应用插件
+        if ($this->request->get('from') !== 'force' && count($this->items) === 1) {
+            sysvar('CurrentPluginCode', array_pop($this->items)['code']);
+            return json(['code' => 1, 'info' => '进入应用插件', 'data' => strstr(liteuri(), '#', true), 'wait' => 'false']);
+        }
+        // 插件列表跳转链接处理
+        foreach ($this->items as &$vo) {
+            $vo['encode'] = encode($vo['code']);
+            $vo['center'] = sysuri("layout/{$vo['encode']}", [], false);
+        }
+        $this->fetch();
     }
 
     /**
