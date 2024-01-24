@@ -60,20 +60,20 @@ abstract class Plugin
     public static function getLocalPlugs(?string $type = null, ?array &$total = [], bool $check = false): array
     {
         if (is_null($total)) $total = [];
-        [$data, $locals, $onlines] = [[], ModuleService::getLibrarys(), static::getOnlinePlugs()];
-        foreach (PluginBase::get() as $code => $plugin) {
-            if (!isset($locals[$plugin['package']])) continue;
+        [$data, $plugins, $onlines] = [[], ModuleService::getLibrarys(), static::getOnlinePlugs()];
+        foreach (PluginBase::get() as $code => $info) {
+            if (empty($plugins[$info['package']])) continue;
             // 插件类型过滤
-            $ptype = $locals[$plugin['package']]['type'] ?? '';
+            $ptype = $plugins[$info['package']]['type'] ?? '';
             if (is_string($type) && $ptype !== $type) continue;
             // 插件菜单处理
-            $menus = $plugin['service']::menu();
+            $menus = $info['service']::menu();
             if ($check) {
                 foreach ($menus as $k1 => &$one) {
                     if (!empty($one['subs'])) foreach ($one['subs'] as $k2 => $two) {
                         if (isset($two['node']) && !auth($two['node'])) unset($one['subs'][$k2]);
                     }
-                    if ((empty($one['none']) && empty($one['subs'])) || (isset($one['node']) && !auth($one['node']))) {
+                    if ((empty($one['node']) && empty($one['subs'])) || (isset($one['node']) && !auth($one['node']))) {
                         unset($menus[$k1]);
                     }
                 }
@@ -81,22 +81,22 @@ abstract class Plugin
                 if (empty($menus)) continue;
             }
             // 组件应用插件
-            $local = $locals[$plugin['package']];
-            $online = $onlines[$plugin['package']] ?? [];
+            $plugin = $plugins[$info['package']];
+            $online = $onlines[$info['package']] ?? [];
             $total[$ptype] = ($total[$ptype] ?? 0) + 1;
-            $data[$plugin['package']] = [
+            $data[$info['package']] = [
                 'type'      => $ptype,
                 'code'      => $code,
-                'name'      => $online['name'] ?? ($local['name'] ?? ''),
-                'cover'     => $online['cover'] ?? ($local['cover'] ?? ''),
+                'name'      => $online['name'] ?? ($plugin['name'] ?? ''),
+                'cover'     => $online['cover'] ?? ($plugin['cover'] ?? ''),
                 'amount'    => $online['amount'] ?? '0.00',
-                'remark'    => $online['remark'] ?? ($local['description'] ?? ''),
-                'version'   => $local['version'],
-                'service'   => $plugin['service'],
-                'package'   => $plugin['package'],
-                'license'   => $online['license'] ?? (empty($local['license']) ? 'unknow' : $local['license'][0]),
+                'remark'    => $online['remark'] ?? ($plugin['description'] ?? ''),
+                'version'   => $plugin['version'],
+                'service'   => $info['service'],
+                'package'   => $info['package'],
+                'license'   => $online['license'] ?? (empty($plugin['license']) ? 'unknow' : $plugin['license'][0]),
                 'licenses'  => $online['license_name'] ?? (empty($online['amount'] ?? '0.00') ? "插件体验" : "收费插件"),
-                'platforms' => empty($plugin['platforms']) ? ($online['platforms'] ?? []) : $plugin['platforms'],
+                'platforms' => empty($info['platforms']) ? ($online['platforms'] ?? []) : $info['platforms'],
                 'plugmenus' => $menus,
             ];
         }
