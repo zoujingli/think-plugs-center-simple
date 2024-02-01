@@ -61,13 +61,14 @@ abstract class Plugin
     {
         if (is_null($total)) $total = [];
         [$data, $plugins, $onlines] = [[], ModuleService::getLibrarys(), static::getOnlinePlugs()];
-        foreach (PluginBase::get() as $code => $info) {
-            if (empty($plugins[$info['package']])) continue;
+        foreach (PluginBase::get() as $code => $packer) {
+            if (empty($plugins[$packer['package']])) continue;
             // 插件类型过滤
-            $ptype = $plugins[$info['package']]['type'] ?? '';
+            $ptype = $plugins[$packer['package']]['type'] ?? '';
+            $total[$ptype] = ($total[$ptype] ?? 0) + 1;
             if (is_string($type) && $ptype !== $type) continue;
             // 插件菜单处理
-            $menus = $info['service']::menu();
+            $menus = $packer['service']::menu();
             if ($check) {
                 foreach ($menus as $k1 => &$one) {
                     if (!empty($one['subs'])) foreach ($one['subs'] as $k2 => $two) {
@@ -81,10 +82,9 @@ abstract class Plugin
                 if (empty($menus)) continue;
             }
             // 组件应用插件
-            $plugin = $plugins[$info['package']];
-            $online = $onlines[$info['package']] ?? [];
-            $total[$ptype] = ($total[$ptype] ?? 0) + 1;
-            $data[$info['package']] = [
+            $plugin = $plugins[$packer['package']];
+            $online = $onlines[$packer['package']] ?? [];
+            $data[$packer['package']] = [
                 'type'      => $ptype,
                 'code'      => $code,
                 'name'      => $online['name'] ?? ($plugin['name'] ?? ''),
@@ -92,11 +92,11 @@ abstract class Plugin
                 'amount'    => $online['amount'] ?? '0.00',
                 'remark'    => $online['remark'] ?? ($plugin['description'] ?? ''),
                 'version'   => $plugin['version'],
-                'service'   => $info['service'],
-                'package'   => $info['package'],
+                'package'   => $packer['package'],
+                'service'   => $packer['service'],
                 'license'   => $online['license'] ?? (empty($plugin['license']) ? 'unknow' : $plugin['license'][0]),
-                'licenses'  => $online['license_name'] ?? (empty($online['amount'] ?? '0.00') ? "插件体验" : "收费插件"),
-                'platforms' => empty($info['platforms']) ? ($online['platforms'] ?? []) : $info['platforms'],
+                'licenses'  => $online['license_name'] ?? (empty($online['amount'] ?? '0.00') ? "免费体验" : "收费插件"),
+                'platforms' => empty($packer['platforms']) ? ($online['platforms'] ?? []) : $packer['platforms'],
                 'plugmenus' => $menus,
             ];
         }

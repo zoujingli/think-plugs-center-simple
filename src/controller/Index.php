@@ -32,8 +32,8 @@ class Index extends Controller
 {
     /**
      * 应用插件入口
-     * @auth true
      * @menu true
+     * @login true
      * @return void|\think\Response
      * @throws \ReflectionException
      * @throws \think\admin\Exception
@@ -63,18 +63,18 @@ class Index extends Controller
     /**
      * 显示插件菜单
      * @login true
-     * @param string $code
+     * @param string $encode 应用插件编码
      * @throws \ReflectionException
      * @throws \think\admin\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function layout(string $code = '')
+    public function layout(string $encode = '')
     {
-        $code = decode($code);
-        if (empty($code)) $this->error('操作标识不能为空！');
-
+        if (empty($code = decode($encode))) {
+            $this->error('应用插件不能为空！');
+        }
         sysvar('CurrentPluginCode', $code);
         $this->plugin = \think\admin\Plugin::get($code);
         if (empty($this->plugin)) $this->error('插件未安装！');
@@ -112,7 +112,7 @@ class Index extends Controller
                 'id'    => 9999998,
                 'url'   => '#',
                 'sub'   => $menus,
-                'node'  => Service::getAppName(),
+                'node'  => Service::getAppCode(),
                 'title' => $this->plugin['name']
             ],
             [
@@ -123,7 +123,6 @@ class Index extends Controller
         ];
 
         $this->super = AdminService::isSuper();
-        $this->theme = AdminService::getUserTheme();
         $this->title = $this->plugin['name'] ?? '';
         $this->fetch('layout/index');
     }
@@ -136,8 +135,9 @@ class Index extends Controller
      */
     public function setDefault()
     {
-        $data = $this->_vali(['default.require' => '默认插件不能为空！']);
-        sysdata('plugin.center.config', $data);
+        sysdata('plugin.center.config', $this->_vali([
+            'default.require' => '默认插件不能为空！'
+        ]));
         $this->success('设置默认插件成功！');
     }
 

@@ -48,7 +48,8 @@ abstract class Api
         } catch (Exception $exception) {
             if ($exception->getCode() === 401) {
                 try {
-                    self::clearToken();
+                    Library::$sapp->cache->delete('plugin-jwt-token');
+                    sysdata('plugin.center.login.token', []);
                     return self::_create($path)->$name(...$args);
                 } catch (\Exception$exception) {
                     throw new HttpResponseException(json([
@@ -74,24 +75,9 @@ abstract class Api
      */
     private static function _create(string $uri): JsonRpcClient
     {
-        if (request()->host() === 'plugin.local.cuci.cc') {
-            $rpc = 'http:' . '//plugin.local.cuci.cc/plugin/api/jsonrpc';
-        } else {
-            $rpc = Support::getServer() . 'plugin/api/jsonrpc';
-        }
+        $rpc = Support::getServer() . 'plugin/api/jsonrpc';
         $scode = CodeExtend::enSafe64(sysconf('base.site_name') . ' # ' . sysconf('base.app_version'));
         $token = Library::$sapp->cache->get('plugin-jwt-token') ?: (sysdata('plugin.center.login.token')['token'] ?? '');
         return new JsonRpcClient($rpc, ["api-name:{$uri}", "api-scode:{$scode}", "api-token:{$token}", "api-client:" . Support::getSysId()]);
-    }
-
-    /**
-     * 清除请求令牌
-     * @return boolean
-     * @throws \think\admin\Exception
-     */
-    public static function clearToken(): bool
-    {
-        Library::$sapp->cache->delete('plugin-jwt-token');
-        return !!sysdata('plugin.center.login.token', []);
     }
 }

@@ -5,9 +5,9 @@
     <div class="layui-row layui-col-space15">
         {foreach $items as $item}
         <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
-            <div class="shadow-mini border-radius-6 padding-15 think-bg-white">
+            <div class="shadow border-radius-6 padding-15 think-bg-white">
                 <div class="plugin-item">
-                    <div class="plugin-item-icon uploadimage" data-lazy-src="{$item.cover|default=''}" data-plugs-click="{$item.encode}">
+                    <div class="plugin-item-icon uploadimage shadow-none" data-lazy-src="{$item.cover|default=''}" data-plugs-click="{$item.encode}">
                         <div class="plugin-item-tags flex flex-between">
                             <div class="layui-badge layui-bg-cyan">{$item.code|default=''}</div>
                             {notempty name='item.version'}
