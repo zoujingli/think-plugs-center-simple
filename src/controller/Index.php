@@ -124,6 +124,7 @@ class Index extends Controller
 
         $this->super = AdminService::isSuper();
         $this->title = $this->plugin['name'] ?? '';
+        $this->theme = AdminService::getUserTheme();
         $this->fetch('layout/index');
     }
 
