@@ -9,6 +9,8 @@
 
 **ThinkAdmin** 简易版插件入库，用于管理已安装的插件入口！
 
+自 v1.0.7 开始，不再加载线下插件信息，因此之后的版本可以在内网运行，无需外网支持。
+
 代码主仓库放在 **Gitee**，**Github** 仅为镜像仓库用于发布 **Composer** 包。
 
 ### 安装插件
@@ -40,6 +42,6 @@ composer remove zoujingli/think-plugs-center-simple
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有 Copyright © 2014-2023 by ThinkAdmin (https://thinkadmin.top) All rights reserved。
+版权所有 Copyright © 2014-2024 by ThinkAdmin (https://thinkadmin.top) All rights reserved。
 
 更多细节参阅 [LICENSE.txt](license)
