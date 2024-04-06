@@ -29,3 +29,12 @@ if (!function_exists('liteuri')) {
         return sysuri("layout/{$code}", [], false) . '#' . url($url, $vars, $suffix, $domain)->build();
     }
 }
+
+if (!function_exists('random_bgc')) {
+    function random_bgc(?int $idx = null): string
+    {
+        $colors = ['red', 'blue', 'orig', 'green', 'violet', 'purple', 'brown'];
+        $color = is_null($idx) ? $colors[array_rand($colors)] : $colors[$idx % count($colors)];
+        return "think-bg-{$color}";
+    }
+}

@@ -60,7 +60,7 @@ abstract class Plugin
     public static function getLocalPlugs(?string $type = null, ?array &$total = [], bool $check = false): array
     {
         if (is_null($total)) $total = [];
-        [$data, $plugins, $onlines] = [[], ModuleService::getLibrarys(), static::getOnlinePlugs()];
+        [$data, $plugins] = [[], ModuleService::getLibrarys()];
         foreach (PluginBase::get() as $code => $packer) {
             if (empty($plugins[$packer['package']])) continue;
             // 插件类型过滤
@@ -83,48 +83,22 @@ abstract class Plugin
             }
             // 组件应用插件
             $plugin = $plugins[$packer['package']];
-            $online = $onlines[$packer['package']] ?? [];
             $data[$packer['package']] = [
                 'type'      => $ptype,
                 'code'      => $code,
-                'name'      => $online['name'] ?? ($plugin['name'] ?? ''),
-                'cover'     => $online['cover'] ?? ($plugin['cover'] ?? ''),
-                'amount'    => $online['amount'] ?? '0.00',
-                'remark'    => $online['remark'] ?? ($plugin['description'] ?? ''),
+                'name'      => $plugin['name'] ?? '',
+                'cover'     => $plugin['cover'] ?? '',
+                'amount'    => $plugin['amount'] ?? '0.00',
+                'remark'    => $plugin['remark'] ?? ($plugin['description'] ?? ''),
                 'version'   => $plugin['version'],
                 'package'   => $packer['package'],
                 'service'   => $packer['service'],
-                'license'   => $online['license'] ?? (empty($plugin['license']) ? 'unknow' : $plugin['license'][0]),
-                'licenses'  => $online['license_name'] ?? (empty($online['amount'] ?? '0.00') ? "免费体验" : "收费插件"),
-                'platforms' => empty($packer['platforms']) ? ($online['platforms'] ?? []) : $packer['platforms'],
+                'license'   => empty($plugin['license']) ? 'unknow' : $plugin['license'][0],
+                'licenses'  => "",
+                'platforms' => $packer['platforms'] ?? [],
                 'plugmenus' => $menus,
             ];
         }
         return $data;
-    }
-
-    /**
-     * 获取市场插件
-     * @return array
-     * @throws \think\admin\Exception
-     */
-    public static function getOnlinePlugs(): array
-    {
-        $data = [];
-        foreach (Api::call('plugin.all') as $item) {
-            $data[$item['package']] = $item;
-        }
-        return $data;
-    }
-
-    /**
-     * 获取插件信息
-     * @param string $code
-     * @return mixed
-     * @throws \think\admin\Exception
-     */
-    public static function get(string $code = '')
-    {
-        return Api::call('plugin.get', $code);
     }
 }

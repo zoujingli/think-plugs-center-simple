@@ -3,11 +3,11 @@
 {block name='content'}
 <div class="padding-5">
     <div class="layui-row layui-col-space15">
-        {foreach $items as $item}
+        {foreach :array_values($items) as $k=>$item}
         <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
             <div class="shadow border-radius-6 padding-15 think-bg-white">
                 <div class="plugin-item">
-                    <div class="plugin-item-icon uploadimage shadow-none" data-lazy-src="{$item.cover|default=''}" data-plugs-click="{$item.encode}">
+                    <div class="plugin-item-icon uploadimage shadow-none {:random_bgc($k)}" data-lazy-src="{$item.cover|default=''}" data-plugs-click="{$item.encode}">
                         <div class="plugin-item-tags flex flex-between">
                             <div class="layui-badge layui-bg-cyan">{$item.code|default=''}</div>
                             {notempty name='item.version'}
@@ -16,6 +16,9 @@
                         </div>
                         <div class="plugin-item-name">
                             <div class="layui-elip">{$item.name}</div>
+                        </div>
+                        <div class="plugin-item-desc">
+                            <div class="layui-elip">{$item.remark}</div>
                         </div>
                     </div>
                 </div>
@@ -56,6 +59,17 @@
     }
 
     .plugin-item-name {
+        top: 25%;
+        left: 0;
+        right: 0;
+        color: #fff;
+        position: absolute;
+        font-size: 30px;
+        line-height: 2em;
+        text-align: center;
+    }
+
+    .plugin-item-desc {
         left: 0;
         right: 0;
         color: #fff;
